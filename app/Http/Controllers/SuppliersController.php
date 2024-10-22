@@ -15,7 +15,7 @@ class SuppliersController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
         // Récupérer tous les fournisseurs avec pagination
-        $suppliers = Supplier::paginate(5);
+        $suppliers = $query->paginate(5);
 
         return view('suppliers.index', compact('suppliers'));
     }
