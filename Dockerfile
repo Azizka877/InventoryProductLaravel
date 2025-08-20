@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 FROM php:8.2-alpine
 
 # Installer les dépendances système nécessaires
@@ -18,13 +27,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 # Copier le fichier .env pour Docker
 COPY .env.docker .env
-# Copier les fichiers de l'application (EXCEPT .env)
+# Copier les fichiers de l'application
 COPY . .
 
-# Copier le fichier .env.example vers .env si .env n'existe pas
-RUN if [ ! -f .env ]; then \
-    cp .env.example .env; \
-    fi
+# Créer le fichier .env depuis .env.example
+RUN cp .env.example .env
 
 # Installer les dépendances Composer
 RUN composer install --optimize-autoloader --no-dev --no-interaction
@@ -35,16 +42,24 @@ RUN mkdir -p database && \
     chmod 755 storage bootstrap/cache && \
     chmod 644 database/database.sqlite
 
-# Générer la clé d'application (seulement si elle n'existe pas)
-RUN if ! grep -q '^APP_KEY=base64:' .env; then \
-    php artisan key:generate --force; \
-    fi
+# Générer la clé d'application
+RUN php artisan key:generate --force
 
-# Exécuter les migrations et seeds
+# Exécuter les migrations
 RUN php artisan migrate --force
-RUN php artisan db:seed --force
 
-# Optimiser l'application
+# Créer UNIQUEMENT l'utilisateur admin (évite les erreurs de seeders)
+RUN php artisan tinker --execute="\
+    \App\Models\User::create([\
+        'name' => 'Admin User',\
+        'email' => 'admin@example.com',\
+        'password' => bcrypt('admin123'),\
+        'email_verified_at' => now()\
+    ]);\
+    echo '✅ Admin user created successfully';\
+    "
+
+# Optimiser l'application pour la production
 RUN php artisan optimize
 RUN php artisan config:cache
 RUN php artisan route:cache
