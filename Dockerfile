@@ -16,9 +16,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
-
-# Copier les fichiers de l'application
+# Copier le fichier .env pour Docker
+COPY .env.docker .env
+# Copier les fichiers de l'application (EXCEPT .env)
 COPY . .
+
+# Copier le fichier .env.example vers .env si .env n'existe pas
+RUN if [ ! -f .env ]; then \
+    cp .env.example .env; \
+    fi
 
 # Installer les dépendances Composer
 RUN composer install --optimize-autoloader --no-dev --no-interaction
@@ -29,8 +35,10 @@ RUN mkdir -p database && \
     chmod 755 storage bootstrap/cache && \
     chmod 644 database/database.sqlite
 
-# Générer la clé d'application
-RUN php artisan key:generate --force
+# Générer la clé d'application (seulement si elle n'existe pas)
+RUN if ! grep -q '^APP_KEY=base64:' .env; then \
+    php artisan key:generate --force; \
+    fi
 
 # Exécuter les migrations et seeds
 RUN php artisan migrate --force
