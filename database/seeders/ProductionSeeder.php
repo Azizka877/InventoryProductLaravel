@@ -20,25 +20,25 @@ class ProductionSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        // Créer des fournisseurs réalistes
+        // Créer des fournisseurs réalistes AVEC LES BONNES COLONNES
         $supplier1 = Supplier::create([
             'name' => 'AgriSupply Centre',
-            'contact' => 'contact@agrisupply.com',
-            'phone' => '+1 555-0123',
+            'email' => 'contact@agrisupply.com',       // ✅ email au lieu de contact
+            'phone_number' => '+1 555-0123',           // ✅ phone_number au lieu de phone
             'address' => '123 Farm Road, Ruralville'
         ]);
 
         $supplier2 = Supplier::create([
             'name' => 'Animal Health Pro',
-            'contact' => 'sales@animalhealth.com',
-            'phone' => '+1 555-0456',
+            'email' => 'sales@animalhealth.com',       // ✅ email
+            'phone_number' => '+1 555-0456',           // ✅ phone_number
             'address' => '456 Veterinary Ave, Farmtown'
         ]);
 
         $supplier3 = Supplier::create([
             'name' => 'Premium Feed Co',
-            'contact' => 'orders@premiumfeed.com',
-            'phone' => '+1 555-0789',
+            'email' => 'orders@premiumfeed.com',       // ✅ email
+            'phone_number' => '+1 555-0789',           // ✅ phone_number
             'address' => '789 Grain Street, Agricity'
         ]);
 
@@ -59,8 +59,54 @@ class ProductionSeeder extends Seeder
             'supplier_id' => $supplier2->id
         ]);
 
-        // Ajoutez les autres produits de la même manière...
-        
+        Product::create([
+            'name' => 'Broyeur à Céréales 500kg/h',
+            'description' => 'Broyeur électrique pour céréales. Capacité 500kg par heure.',
+            'price' => 1250.00,
+            'quantity' => 5,
+            'supplier_id' => $supplier1->id
+        ]);
+
+        Product::create([
+            'name' => 'Complément Minéral Ovin',
+            'description' => 'Bloc à lécher pour ovins. Riches en oligo-éléments. 20kg.',
+            'price' => 32.75,
+            'quantity' => 80,
+            'supplier_id' => $supplier3->id
+        ]);
+
+        Product::create([
+            'name' => 'Thermomètre Digital Animal',
+            'description' => 'Thermomètre vétérinaire digital. Lecture rapide, étanche.',
+            'price' => 24.99,
+            'quantity' => 35,
+            'supplier_id' => $supplier2->id
+        ]);
+
+        Product::create([
+            'name' => 'Bétaillère Galvanisée',
+            'description' => 'Bétaillère 6m³ pour transport bovin. Structure galvanisée.',
+            'price' => 4200.00,
+            'quantity' => 3,
+            'supplier_id' => $supplier1->id
+        ]);
+
+        Product::create([
+            'name' => 'Insémination Artificielle Bovine',
+            'description' => 'Kit complet insémination artificielle pour bovins. Stérile.',
+            'price' => 156.80,
+            'quantity' => 25,
+            'supplier_id' => $supplier2->id
+        ]);
+
+        Product::create([
+            'name' => 'Foin de Luzerne Premium',
+            'description' => 'Ballé rond de foin de luzerne 1ère coupe. 400kg.',
+            'price' => 120.00,
+            'quantity' => 15,
+            'supplier_id' => $supplier3->id
+        ]);
+
         $this->command->info('✅ Données réalistes créées avec succès');
         $this->command->info('👤 Admin: admin@farm.com / admin123');
     }
