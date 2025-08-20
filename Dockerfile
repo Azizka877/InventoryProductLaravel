@@ -16,7 +16,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
-COPY .env.docker .env
 
 # Copier les fichiers de l'application
 COPY . .
