@@ -25,7 +25,8 @@ RUN cp .env.example .env
 
 # Installer les dépendances Composer
 RUN composer install --optimize-autoloader --no-dev --no-interaction
-
+# AJOUTEZ cette ligne au DÉBUT du Dockerfile pour casser le cache
+ARG CACHE_BUST=1
 # Créer la base de données SQLite et configurer les permissions
 RUN mkdir -p database && \
     touch database/database.sqlite && \
@@ -35,18 +36,17 @@ RUN mkdir -p database && \
 # Générer la clé d'application
 RUN php artisan key:generate --force
 
-# Exécuter les migrations
-RUN php artisan migrate --force
+# Exécuter les migrations (fresh pour être sûr)
+RUN php artisan migrate:fresh --force
 
-# Créer des données réalistes pour l'élevage (Livestock)
 # Exécuter les seeders
 RUN php artisan db:seed --class=ProductionSeeder --force
+
 # Optimiser l'application pour la production
 RUN php artisan optimize
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
-
 # Exposer le port
 EXPOSE 8000
 
