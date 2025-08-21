@@ -32,17 +32,18 @@ RUN mkdir -p database && \
     chmod 755 storage bootstrap/cache && \
     chmod 644 database/database.sqlite
 
+    # Générer la clé d'application
+RUN php artisan key:generate --force
+
+# Recréer complètement la base de données
+RUN php artisan migrate:fresh --force
 # Nettoyer le cache des migrations et regénérer
 RUN php artisan cache:clear && \
     php artisan config:clear && \
     php artisan route:clear && \
     php artisan view:clear
 
-# Générer la clé d'application
-RUN php artisan key:generate --force
 
-# Recréer complètement la base de données
-RUN php artisan migrate:fresh --force
 
 # Exécuter les seeders
 RUN php artisan db:seed --class=ProductionSeeder --force
