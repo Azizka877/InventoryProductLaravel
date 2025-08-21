@@ -20,28 +20,24 @@ class ProductionSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        // Créer des fournisseurs réalistes AVEC LES BONNES COLONNES
-        $supplier1 = Supplier::create([
-            'name' => 'AgriSupply Centre',
-            'email' => 'contact@agrisupply.com',       // ✅ email au lieu de contact
-            'phone_number' => '+1 555-0123',           // ✅ phone_number au lieu de phone
-            'address' => '123 Farm Road, Ruralville'
-        ]);
+// Créer des fournisseurs réalistes AVEC LES BONNES COLONNES
+$supplier1 = Supplier::create([
+    'name' => 'AgriSupply Centre',
+    'email' => 'contact@agrisupply.com',
+    'phone_number' => '+1 555-0123',
+]);
 
-        $supplier2 = Supplier::create([
-            'name' => 'Animal Health Pro',
-            'email' => 'sales@animalhealth.com',       // ✅ email
-            'phone_number' => '+1 555-0456',           // ✅ phone_number
-            'address' => '456 Veterinary Ave, Farmtown'
-        ]);
+$supplier2 = Supplier::create([
+    'name' => 'Animal Health Pro',
+    'email' => 'sales@animalhealth.com',
+    'phone_number' => '+1 555-0456',
+]);
 
-        $supplier3 = Supplier::create([
-            'name' => 'Premium Feed Co',
-            'email' => 'orders@premiumfeed.com',       // ✅ email
-            'phone_number' => '+1 555-0789',           // ✅ phone_number
-            'address' => '789 Grain Street, Agricity'
-        ]);
-
+$supplier3 = Supplier::create([
+    'name' => 'Premium Feed Co',
+    'email' => 'orders@premiumfeed.com',
+    'phone_number' => '+1 555-0789',
+]);
         // Créer des produits réalistes pour l'élevage
         Product::create([
             'name' => 'Aliment pour Bovins Premium',

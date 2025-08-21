@@ -25,18 +25,23 @@ RUN cp .env.example .env
 
 # Installer les dépendances Composer
 RUN composer install --optimize-autoloader --no-dev --no-interaction
-# AJOUTEZ cette ligne au DÉBUT du Dockerfile pour casser le cache
-ARG CACHE_BUST=1
+
 # Créer la base de données SQLite et configurer les permissions
 RUN mkdir -p database && \
     touch database/database.sqlite && \
     chmod 755 storage bootstrap/cache && \
     chmod 644 database/database.sqlite
 
+# Nettoyer le cache des migrations et regénérer
+RUN php artisan cache:clear && \
+    php artisan config:clear && \
+    php artisan route:clear && \
+    php artisan view:clear
+
 # Générer la clé d'application
 RUN php artisan key:generate --force
 
-# Exécuter les migrations (fresh pour être sûr)
+# Recréer complètement la base de données
 RUN php artisan migrate:fresh --force
 
 # Exécuter les seeders
@@ -44,11 +49,7 @@ RUN php artisan db:seed --class=ProductionSeeder --force
 
 # Optimiser l'application pour la production
 RUN php artisan optimize
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
-# Exposer le port
+
 EXPOSE 8000
 
-# Commande de démarrage
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
